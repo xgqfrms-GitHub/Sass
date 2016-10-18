@@ -199,7 +199,7 @@ $college-ruled-style: (
     width: 60%;
     margin: 0px auto; 
 }
-``` 
+```
 
 ###  Sass 允许mixins内部使用 & 选择器。
 > 1. ＆选择器获取在mixin被包括的点,被分配的父的值。
@@ -219,7 +219,7 @@ $college-ruled-style: (
     top: 40%;
     @include text-hover(red);
 }
-``` 
+```
 
 ### 
 
@@ -228,8 +228,275 @@ $college-ruled-style: (
 > &选择器 *是一个 Sass结构，它允许更灵活的表现通过引用父选择器,,when用CSS伪元素和类时。
 
 > 字符串插值是胶水，可以让你在另一个字符串中间插入一个字符串，当它是在一个可变格式。
-  它的应用有所不同，但插值能力特别有用，用于传递文件名。
+>   它的应用有所不同，但插值能力特别有用，用于传递文件名。
 
 ###  functions, arithmetic, and color operations 
+
+https://github.com/xgqfrms-GitHub/Sass/tree/master/Tutorial
+
+在Sass 功能和操作可实现对样式的计算和迭代。
+> 操作颜色值 
+> 在列表和映射上迭代
+> 根据条件应用样式 
+> 赋值, 数学运算的结果值
+
+### opacity  不透明度
+(alpha parameter) RGBA , HSLA 
+> transparent 透明
+
+```scss
+/* fade-out */
+$color: rgba(39, 39, 39, 0.5);
+$amount: 0.1;
+$color2: fade-out($color, $amount);//rgba(39, 39, 39, 0.4)
+/* fade-in */
+$color: rgba(55,7,56, 0.5);
+$amount: 0.1;
+$color2: fade-in($color, $amount); //rgba(55,7,56, 0.6)
+
+/* adjust-hue($color, $degrees) */
+// 通过采取颜色和若干度（通常为-360度和360度之间）改变颜色的色调，并且通过量旋转色轮。（通常-360度和360度之间），和旋转由该量的色轮。
+adjust-hue($color, $degrees)
+```
+
+###  执行数学函数, 计算测量-包括颜色。
+
+> 计算的颜色
+1. 该操作是在红，绿，和蓝分量执行的。
+2. 它通过操作每两个数字,计算答案。
+   Sass算术也可以计算HSLA和字符串的颜色，如红色和蓝色。
+
+```scss
+/* 分段计算 */
+$color: #010203 + #040506;
+
+color: red + blue;
+```
+
+###  Sass 算术运算
+> 加 + 减 - 乘 * 除 / 模％(是在给定的除法的余数, “9％2”将是“1”)
+> SCSS算术要求的单位是兼容; 例如，你无法通过ems乘像素(pixels )。
+
+```scss
+/* Error: 就像常规数学，两个单位相乘的结果平方单位(px^2)*/
+10px * 10px = 100px * px
+/* 为了获得100像素 */
+10px * 10
+```
+```scss
+.math {
+    width: $width;
+    text-align: center;
+    background-color: $lagoon-blue;
+    color: red + blue;
+    height: $width/6;
+    line-height: $width/6;
+    border-radius: $width*1/30
+}
+```
+
+###  在CSS /字符可以被用作分隔符。在Sass，该字符也被用于除。
+
+> 下面是 / 字符用于除, 具体的实例 ：
+> 1. 如果该值，或它的任何部分，被存储在一个变量或由一个函数返回。
+> 2. 如果该值是由括号包围，除非这些括号在列表外面，值是在里边。
+> 3. 如果该值被用作另一个算术表达式的一部分。
+
+```scss
+width: $variable/6; //division
+line-height: (600px)/9; //division
+margin-left: 20-10 px/ 2; //division
+font-size: 10px/8px; //not division
+
+font-size: $width/6/2;
+```
+### Each loop (Each 迭代循环)
+
+```scss
+$list: (orange, purple, teal);
+//Add your each-loop here
+@each $item in $list {
+    .#{$item} {
+        background: $item;
+    }
+}
+```
+### For loops (For 循环)
+> 1. $i 只是一个变量, 列表中的索引，或列表中元素的位置
+> 2. $begin和 $end是循环的起点和终点的占位符
+> 3. through 和 to关键字,在Sass是互换
+
+```scss
+@for $i from $begin through $end {
+     //some rules and or conditions
+}
+
+/* 颜色轮 */
+$total: 10; //Number of .ray divs in our html
+$step: 360deg / $total; //Used to compute the hue based on color-wheel
+@for $i from 1 through $total {
+    .ray:nth-child(#{$i}) {
+        background: adjust-hue(blue, $i * $step);
+    }
+}
+.ray {
+    height: 30px;
+}
+```
+
+### if
+
+```scss
+width: if( $condition, $value-if-true, $value-if-false);
+/* https://www.codecademy.com/courses/learn-sass/ */
+@mixin deck($suit) {
+    @if($suit == hearts || $suit == spades){
+        color: blue;
+    }
+    @else-if($suit == clovers || $suit == diamonds){
+        color: red;
+    }
+    @else{
+        //some rule
+    }
+}
+```
+
+### 对于越来越多的 Sass代码库的最佳实践。
+
+```scss
+http://sass-lang.com/guide
+```
+
+### 我们将开始最佳实践,组织文件。
+
+###  @import
+
+###  Partials(部分的) 
+> 在 Sass中,Partials 是你代码库中分开组织的特定功能的文件。
+
+### 他们在文件名中使用一个"_"前缀符号,告诉Sass 推迟编译单独的文件，而是将其导入。
+```sh
+_filename.scss
+# 要导入此部分到主文件,或该文件封装了重要的规则和大部分项目的样式文件-忽略下划线.
+```
+```scss
+/* 例如，要导入名为_variables.scss文件，添加以下代码行 */
+@import "variables";
+//全局文件导入所有组件和集中逻辑。
+@import "helper/variables";
+@import url(https://fonts.googleapis.com/css?family=Pacifico); 
+//CSS import
+@import "helper/placeholders";
+@import "helper/mixins";
+// helper 提醒者,是指象变量，mixins，函数等资源.
+//这些元素是“帮助”弥补你的代码库的基础，with它的增长。
+```
+###  @extend
+
+```scss
+.lemonade {
+    border: 1px yellow;
+    background-color: #fdd;
+}
+.strawberry {
+    @extend .lemonade;
+    border-color: pink;
+}
+```
+
+### 占位符  
+> 其行为就像一个类或ID选择器，但是使用 **％** 符号,而不是  # 或 . 符号
+
+> 占位符防止自己规则被渲染到自己的CSS,
+> 只有,被任何地方可以被扩展ID或类,一旦可以被扩展变得活跃
+
+```scss
+ a%drink {
+    font-size: 2em;
+    background-color: $lemon-yellow;
+ }
+ .lemonade {
+    @extend %drink;
+    //more rules
+ }
+ /* usage */
+ a.lemonade {
+    font-size: 2em;
+    background-color: $lemon-yellow;
+ }
+.lemonade {
+    //more rules
+}
+```
+
+> 占位符巩固规则的好方法, 这实际上在HTML中,从未获得对自己使用。
+
+```scss
+// helper/_placeholders.scss:
+%absolute{
+    position: absolute;
+}
+// main.scss
+@extend %absolute;
+```
+
+### 我们可以清楚地看到扩展方式结果,更清洁，更高效的输出结果,用越少可能的重复越好。
+
+```scss
+@mixin no-variable {
+    font-size: 12px;
+    color: #FFF;
+    opacity: .9;
+}
+%placeholder {
+    font-size: 12px;
+    color: #FFF;
+    opacity: .9;
+}
+span {
+    @extend %placeholder;
+}
+div {
+    @extend %placeholder;
+}
+p {
+    @include no-variable;
+}
+h1 {
+    @include no-variable;
+}
+```
+> 将编译：
+
+```css
+span, div{
+    font-size: 12px;
+    color: #FFF;
+    opacity: .9;
+}
+p {
+    font-size: 12px;
+    color: #FFF;
+    opacity: .9;
+    /*rules specific to ps*/
+}
+h1 {
+    font-size: 12px;
+    color: #FFF;
+    opacity: .9;
+    /*rules specific to ps*/
+}
+```
+### 
+> 1. 尽量只创建是采取一个参数入mixins，否则你应该扩展。
+> 2. 总是看你的CSS的输出，以确保按预期的 extend.
+
+# read more ...
+
+[Sass (Syntactically Awesome StyleSheets)](http://sass-lang.com/documentation/file.SASS_REFERENCE.html)
+
+
+
 
 
